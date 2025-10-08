@@ -592,6 +592,7 @@ fetch('./${links.header.project}.hvrj').then(response => response.json()).then(h
 	const css = `body {
 	margin: 0px;
 	background: #000000;
+	overflow: hidden;
 }
 #c_${links.header.project.replaceAll(" ","_")} {
 	display: block;
