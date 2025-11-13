@@ -7,7 +7,7 @@ let main = async (view) => {
 	
 	//set up the canvas for THREE.js
 	const canvas = document.getElementById("c");
-	const renderer = new THREE.WebGLRenderer({canvas, alpha: true, premultipliedAlpha: false, precision: 'lowp', powerPreference: 'low-power'});
+	const renderer = new THREE.WebGLRenderer({canvas, alpha: false, premultipliedAlpha: false, precision: 'lowp', powerPreference: 'low-power'});
 	renderer.setPixelRatio(1.0);
 	renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 	renderer.xr.enabled = true;

@@ -72,8 +72,8 @@ let main = async (view) => {
 	const gizmoGeometry = new THREE.SphereGeometry(1, 64, 16);
 	let plinkgizmo = new THREE.Mesh(gizmoGeometry, gizmoMaterial);
 	plinkgizmo.visible = false;
-	plinkplacer.add(plinkgizmo);
 	plinkgizmo.scale.set(1, 1, 1);
+	plinkplacer.add(plinkgizmo);
 	plinkgizmo.position.z = 80;
 	
 	scene.add(pickableObjs);
@@ -196,21 +196,31 @@ let main = async (view) => {
 				}
 				if (clinkplink && event.target.id == "c"){
 					//set plinkplacer rotation to raycaster rotation
+					plinkplacer.position.copy(this.raycaster.ray.origin);
 					plinkplacer.lookAt(this.raycaster.ray.direction.normalize().multiplyScalar(80));
 					//update the new link position in the link object
 					let ldname = document.getElementById("linkdataname").value;
 					let worldposition = new THREE.Vector3();
 					plinkgizmo.getWorldPosition(worldposition);
-					pickableObjs.getObjectByName(clinkplink).position.set(worldposition.x, worldposition.y, worldposition.z);
+					
+					//sphere pan correction
+					//rotate line starting from world origin to worldposition then get the new line endposition
+					const rotationAxis = new THREE.Vector3(0, 1, 0); // Rotate around the Y-axis
+					const rotationAngle = -(links.header.pan/180)*Math.PI;
+					const rotationMatrix = new THREE.Matrix4();
+					rotationMatrix.makeRotationAxis(rotationAxis.normalize(), rotationAngle);
+					const newEndPosition = worldposition.clone().applyMatrix4(rotationMatrix);
+					
+					pickableObjs.getObjectByName(clinkplink).position.set(newEndPosition.x, newEndPosition.y, newEndPosition.z);
 					
 					if (pickableObjs.getObjectByName(clinkplink).name == clinkplink){
 						//if link exists
-						console.log(event.target.id);
-						console.log("POSITION UPDATED!! Check here why it doesn't update the button");
+						//console.log(event.target.id);
+						//console.log("POSITION UPDATED!! Check here why it doesn't update the button");
 					}
-					links.full[ldname][clinkplink]["x"] = worldposition.x;
-					links.full[ldname][clinkplink]["y"] = worldposition.y;
-					links.full[ldname][clinkplink]["z"] = worldposition.z;
+					links.full[ldname][clinkplink]["x"] = newEndPosition.x;
+					links.full[ldname][clinkplink]["y"] = newEndPosition.y;
+					links.full[ldname][clinkplink]["z"] = newEndPosition.z;
 					const sl = links.full[ldname][clinkplink]["s"];
 					pickableObjs.getObjectByName(clinkplink).scale.set(sl, sl/2, sl);
 				}

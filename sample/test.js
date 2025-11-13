@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {VRButton} from 'three/addons/webxr/VRButton.js';
 
 let ready = false;
 let applelog = "ready just set to false";
@@ -420,18 +419,7 @@ let version = links.full;
 
 applelog += "\n version set to links.full" + links.full;
 
-navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
-	if (!supported){
-		version = links.lite;
-	} else {
-		version = links.full;
-	}
-}).finally(() => {
-	if (window.innerHeight > window.innerWidth+(window.innerWidth/2)) {
-		version = links.lite;
-	}
-	main(version);
-});
+main(version);
 
 applelog += "\n setTimeout is being set next";
 
